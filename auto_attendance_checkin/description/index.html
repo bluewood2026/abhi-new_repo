@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Auto Attendance Check-in/Check-out - Automatic Attendance Management Module</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css">
+    <style>
+        .price-badge {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 24px;
+            font-weight: bold;
+            display: inline-block;
+            margin: 20px 0;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+        .feature-icon {
+            font-size: 48px;
+            color: #1495c9;
+            margin-bottom: 15px;
+        }
+        .feature-card {
+            border: 1px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 20px;
+            transition: transform 0.3s, box-shadow 0.3s;
+            background: white;
+        }
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+        .service-card {
+            box-shadow: -1px 1px 35px rgba(50, 50, 93, 0.1), 0 5px 15px rgba(0, 0, 0, 0.07);
+            border-radius: 10px;
+            border: none;
+            min-height: 145px;
+            margin-bottom: 20px;
+            transition: transform 0.3s;
+        }
+        .service-card:hover {
+            transform: translateY(-5px);
+        }
+        .service-card img {
+            width: 100%;
+            height: auto;
+            max-height: 100px;
+            object-fit: contain;
+        }
+    </style>
+</head>
+<body>
+
+<div class="row justify-content-md-between justify-content-center border-bottom align-items-center py-2 mx-0">
+    <div class="text-center mr-5">
+        <a href="#">
+            <img src="icon.png" alt="odoo-auto-attendance-logo" style="max-width: 128px;">
+        </a>
+    </div>
+    <div class="mt-md-0 mt-4 mb-3 mb-lg-0">
+        <span class="btn btn-sm mb-2 mb-lg-0"
+            style="font-size:14px; font-weight:500; background-color:#203038; color:#fff">
+            <i class="fas fa-check"></i> Community
+        </span>
+        <span class="btn btn-sm mb-2 mb-lg-0"
+            style="font-size:14px; font-weight:500; background-color:#203038; color:#fff">
+            <i class="fas fa-check"></i> Enterprise
+        </span>
+        <div class="price-badge mt-3">
+            <i class="fas fa-dollar-sign"></i> FREE
+        </div>
+    </div>
+</div>
+
+<section class="container" style="margin-top: 30px;">
+    <div class="row">
+        <div class="col-md-12 text-center">
+            <h2 class="oe_slogan" style="font-size: 36px; color: #1495c9; font-weight: 700; margin-bottom: 20px;">
+                <i class="fas fa-user-clock"></i> Auto Attendance Check-in/Check-out
+            </h2>
+            <p style="font-size: 20px; color: #666; line-height: 1.6; max-width: 900px; margin: 0 auto;">
+                Automatically track employee attendance in Odoo 19. This module creates attendance check-in records when users log in and check-out records when they log out or close their browser. Perfect for accurate time tracking without manual intervention.
+            </p>
+        </div>
+    </div>
+</section>
+
+<!-- Key Features Section -->
+<section class="container" style="margin-top: 50px; margin-bottom: 50px;">
+    <h2 class="oe_slogan" style="font-size: 32px; color: #1495c9; text-align: center; margin-bottom: 40px;">
+        <i class="fas fa-star"></i> Key Features
+    </h2>
+    <div class="row">
+        <div class="col-md-4">
+            <div class="feature-card text-center">
+                <div class="feature-icon">
+                    <i class="fas fa-sign-in-alt"></i>
+                </div>
+                <h4 style="color: #1495c9; font-weight: 600;">Auto Check-in on Login</h4>
+                <p>Automatically creates attendance check-in record when user logs into Odoo. No manual action required - perfect for seamless time tracking.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="feature-card text-center">
+                <div class="feature-icon">
+                    <i class="fas fa-sign-out-alt"></i>
+                </div>
+                <h4 style="color: #1495c9; font-weight: 600;">Auto Check-out on Logout</h4>
+                <p>Automatically creates check-out record when user logs out. Ensures accurate time tracking for all employee sessions.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="feature-card text-center">
+                <div class="feature-icon">
+                    <i class="fas fa-window-close"></i>
+                </div>
+                <h4 style="color: #1495c9; font-weight: 600;">Browser Close Detection</h4>
+                <p>Smart session tracking detects when browser is closed without logout. Automatically creates check-out after 15 minutes of inactivity.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="feature-card text-center">
+                <div class="feature-icon">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <h4 style="color: #1495c9; font-weight: 600;">Real-time Activity Tracking</h4>
+                <p>Monitors user activity on every request to detect active sessions. Provides accurate login duration tracking and session management.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="feature-card text-center">
+                <div class="feature-icon">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <h4 style="color: #1495c9; font-weight: 600;">Duplicate Prevention</h4>
+                <p>Prevents duplicate check-ins if employee is already checked in. Intelligent detection ensures data accuracy and prevents errors.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="feature-card text-center">
+                <div class="feature-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+                <h4 style="color: #1495c9; font-weight: 600;">Employee Linking</h4>
+                <p>Automatically links attendance records to employee based on logged-in user. Only creates attendance if user has linked employee record.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Step-by-Step Guide -->
+<section class="container">
+    <h2 class="oe_slogan" style="font-size: 32px; color: #1495c9; text-align: center; margin-bottom: 40px;">
+        <i class="fas fa-book"></i> How to Use
+    </h2>
+
+    <div class="d-flex m-0">
+        <h3
+            style="font-size:2rem !important; font-weight:800 !important; color:#ffffff !important; background-color:#0492cf !important; padding:1rem !important; width:70px !important; height:90px !important">
+            01</h3>
+        <h3 class="oe_slogan"
+            style="text-align:center; font-size:19px; width:100%; margin:0; margin-top:14px; color:#000 !important; opacity:1 !important; line-height:31px; font-weight:400; letter-spacing:.5px; margin-bottom:21px">
+            Ensure that <b>HR Attendance</b> module is installed. Go to <b>Apps</b> menu and search for "Attendances" - make sure it's installed and active.
+        </h3>
+    </div>
+    <div class="mt16">
+        <img class="img img-responsive oe_screenshot"
+            style="width:100%; margin-top:-15px !important; border-top:5px solid #00438B !important; margin-bottom:4rem !important"
+            src="images/01_install_hr_attendance.png" alt="Install HR Attendance Module" />
+    </div>
+
+    <div class="d-flex m-0">
+        <h3
+            style="font-size:2rem !important; font-weight:800 !important; color:#ffffff !important; background-color:#0492cf !important; padding:1rem !important; width:70px !important; height:90px !important">
+            02</h3>
+        <h3 class="oe_slogan"
+            style="text-align:center; font-size:19px; width:100%; margin:0; margin-top:14px; color:#000 !important; opacity:1 !important; line-height:31px; font-weight:400; letter-spacing:.5px; margin-bottom:21px">
+            Install <b>Auto Attendance Check-in/Check-out</b> module. Go to <b>Apps</b> → search "Auto Attendance" → click <b>Install</b> button.
+        </h3>
+    </div>
+    <div class="mt16">
+        <img class="img img-responsive oe_screenshot"
+            style="width:100%; margin-top:-15px !important; border-top:5px solid #00438B !important; margin-bottom:4rem !important"
+            src="images/02_install_module.png" alt="Install Auto Attendance Module" />
+    </div>
+
+    <div class="d-flex m-0">
+        <h3
+            style="font-size:2rem !important; font-weight:800 !important; color:#ffffff !important; background-color:#0492cf !important; padding:1rem !important; width:70px !important; height:90px !important">
+            03</h3>
+        <h3 class="oe_slogan"
+            style="text-align:center; font-size:19px; width:100%; margin:0; margin-top:14px; color:#000 !important; opacity:1 !important; line-height:31px; font-weight:400; letter-spacing:.5px; margin-bottom:21px">
+            Link each user to an employee record. Go to <b>Employees → Employees</b> → Open employee record → Set <b>Related User</b> field to the user account → Save.
+        </h3>
+    </div>
+    <div class="mt16">
+        <img class="img img-responsive oe_screenshot"
+            style="width:100%; margin-top:-15px !important; border-top:5px solid #00438B !important; margin-bottom:4rem !important"
+            src="images/03_link_user_to_employee.png" alt="Link User to Employee" />
+    </div>
+
+    <div class="d-flex m-0">
+        <h3
+            style="font-size:2rem !important; font-weight:800 !important; color:#ffffff !important; background-color:#0492cf !important; padding:1rem !important; width:70px !important; height:90px !important">
+            04</h3>
+        <h3 class="oe_slogan"
+            style="text-align:center; font-size:19px; width:100%; margin:0; margin-top:14px; color:#000 !important; opacity:1 !important; line-height:31px; font-weight:400; letter-spacing:.5px; margin-bottom:21px">
+            Test the module by logging out and logging back in. When user logs in, attendance check-in record will be automatically created with current timestamp.
+        </h3>
+    </div>
+    <div class="mt16">
+        <img class="img img-responsive oe_screenshot"
+            style="width:100%; margin-top:-15px !important; border-top:5px solid #00438B !important; margin-bottom:4rem !important"
+            src="images/04_test_login_checkin.png" alt="Test Login Check-in" />
+    </div>
+
+    <div class="d-flex m-0">
+        <h3
+            style="font-size:2rem !important; font-weight:800 !important; color:#ffffff !important; background-color:#0492cf !important; padding:1rem !important; width:70px !important; height:90px !important">
+            05</h3>
+        <h3 class="oe_slogan"
+            style="text-align:center; font-size:19px; width:100%; margin:0; margin-top:14px; color:#000 !important; opacity:1 !important; line-height:31px; font-weight:400; letter-spacing:.5px; margin-bottom:21px">
+            View attendance records in <b>Attendances → Management</b> menu. You will see all automatically created check-in and check-out records with timestamps.
+        </h3>
+    </div>
+    <div class="mt16">
+        <img class="img img-responsive oe_screenshot"
+            style="width:100%; margin-top:-15px !important; border-top:5px solid #00438B !important; margin-bottom:4rem !important"
+            src="images/05_view_attendance_records.png" alt="View Attendance Records" />
+    </div>
+
+    <div class="d-flex m-0">
+        <h3
+            style="font-size:2rem !important; font-weight:800 !important; color:#ffffff !important; background-color:#0492cf !important; padding:1rem !important; width:70px !important; height:90px !important">
+            06</h3>
+        <h3 class="oe_slogan"
+            style="text-align:center; font-size:19px; width:100%; margin:0; margin-top:14px; color:#000 !important; opacity:1 !important; line-height:31px; font-weight:400; letter-spacing:.5px; margin-bottom:21px">
+            Test check-out by logging out. When user clicks logout, check-out record will be automatically created with current timestamp, completing the attendance session.
+        </h3>
+    </div>
+    <div class="mt16">
+        <img class="img img-responsive oe_screenshot"
+            style="width:100%; margin-top:-15px !important; border-top:5px solid #00438B !important; margin-bottom:4rem !important"
+            src="images/06_test_logout_checkout.png" alt="Test Logout Check-out" />
+    </div>
+
+    <div class="d-flex m-0">
+        <h3
+            style="font-size:2rem !important; font-weight:800 !important; color:#ffffff !important; background-color:#0492cf !important; padding:1rem !important; width:70px !important; height:90px !important">
+            07</h3>
+        <h3 class="oe_slogan"
+            style="text-align:center; font-size:19px; width:100%; margin:0; margin-top:14px; color:#000 !important; opacity:1 !important; line-height:31px; font-weight:400; letter-spacing:.5px; margin-bottom:21px">
+            Test browser close detection. If user closes browser directly without logout, cron job (runs every 5 minutes) will detect inactive session and create check-out after 15 minutes of no activity.
+        </h3>
+    </div>
+    <div class="mt16">
+        <img class="img img-responsive oe_screenshot"
+            style="width:100%; margin-top:-15px !important; border-top:5px solid #00438B !important; margin-bottom:4rem !important"
+            src="images/07_browser_close_detection.png" alt="Browser Close Detection" />
+    </div>
+
+    <div class="d-flex m-0">
+        <h3
+            style="font-size:2rem !important; font-weight:800 !important; color:#ffffff !important; background-color:#0492cf !important; padding:1rem !important; width:70px !important; height:90px !important">
+            08</h3>
+        <h3 class="oe_slogan"
+            style="text-align:center; font-size:19px; width:100%; margin:0; margin-top:14px; color:#000 !important; opacity:1 !important; line-height:31px; font-weight:400; letter-spacing:.5px; margin-bottom:21px">
+            Monitor session activity in <b>Settings → Technical → Database Structure → Models → User Session Tracker</b> to view active sessions and last activity timestamps.
+        </h3>
+    </div>
+    <div class="mt16">
+        <img class="img img-responsive oe_screenshot"
+            style="width:100%; margin-top:-15px !important; border-top:5px solid #00438B !important; margin-bottom:4rem !important"
+            src="images/08_session_tracker.png" alt="Session Tracker View" />
+    </div>
+
+    <div class="d-flex m-0">
+        <h3
+            style="font-size:2rem !important; font-weight:800 !important; color:#ffffff !important; background-color:#0492cf !important; padding:1rem !important; width:70px !important; height:90px !important">
+            09</h3>
+        <h3 class="oe_slogan"
+            style="text-align:center; font-size:19px; width:100%; margin:0; margin-top:14px; color:#000 !important; opacity:1 !important; line-height:31px; font-weight:400; letter-spacing:.5px; margin-bottom:21px">
+            View comprehensive attendance dashboard in <b>Attendances → Overview → Dashboard</b> to see attendance statistics, worked hours, and attendance history for all employees.
+        </h3>
+    </div>
+    <div class="mt16">
+        <img class="img img-responsive oe_screenshot"
+            style="width:100%; margin-top:-15px !important; border-top:5px solid #00438B !important; margin-bottom:4rem !important"
+            src="images/09_attendance_dashboard.png" alt="Attendance Dashboard" />
+    </div>
+</section>
+
+<!-- Features Detail Section -->
+<section class="container" style="margin-top: 50px; margin-bottom: 50px;">
+    <h2 class="oe_slogan" style="font-size: 32px; color: #1495c9; text-align: center; margin-bottom: 40px;">
+        <i class="fas fa-list-check"></i> Complete Feature List
+    </h2>
+    <div class="row">
+        <div class="col-md-6">
+            <ul style="list-style: none; padding: 0;">
+                <li style="padding: 10px 0; border-bottom: 1px solid #eee;">
+                    <i class="fas fa-check-circle" style="color: #28a745; margin-right: 10px;"></i>
+                    <strong>Automatic Check-in</strong> - Creates attendance record when user logs in
+                </li>
+                <li style="padding: 10px 0; border-bottom: 1px solid #eee;">
+                    <i class="fas fa-check-circle" style="color: #28a745; margin-right: 10px;"></i>
+                    <strong>Automatic Check-out</strong> - Creates check-out when user logs out
+                </li>
+                <li style="padding: 10px 0; border-bottom: 1px solid #eee;">
+                    <i class="fas fa-check-circle" style="color: #28a745; margin-right: 10px;"></i>
+                    <strong>Browser Close Detection</strong> - Detects when browser is closed without logout
+                </li>
+                <li style="padding: 10px 0; border-bottom: 1px solid #eee;">
+                    <i class="fas fa-check-circle" style="color: #28a745; margin-right: 10px;"></i>
+                    <strong>Session Activity Tracking</strong> - Monitors user activity on every request
+                </li>
+                <li style="padding: 10px 0; border-bottom: 1px solid #eee;">
+                    <i class="fas fa-check-circle" style="color: #28a745; margin-right: 10px;"></i>
+                    <strong>Inactive Session Detection</strong> - Automatically checks out after 15 minutes of inactivity
+                </li>
+                <li style="padding: 10px 0; border-bottom: 1px solid #eee;">
+                    <i class="fas fa-check-circle" style="color: #28a745; margin-right: 10px;"></i>
+                    <strong>Duplicate Prevention</strong> - Prevents multiple check-ins for same session
+                </li>
+                <li style="padding: 10px 0; border-bottom: 1px solid #eee;">
+                    <i class="fas fa-check-circle" style="color: #28a745; margin-right: 10px;"></i>
+                    <strong>Employee Linking</strong> - Automatically links attendance to employee record
+                </li>
+                <li style="padding: 10px 0; border-bottom: 1px solid #eee;">
+                    <i class="fas fa-check-circle" style="color: #28a745; margin-right: 10px;"></i>
+                    <strong>Login Duration Tracking</strong> - Tracks how long user has been logged in
+                </li>
+                <li style="padding: 10px 0; border-bottom: 1px solid #eee;">
+                    <i class="fas fa-check-circle" style="color: #28a745; margin-right: 10px;"></i>
+                    <strong>Error Handling</strong> - Graceful error handling prevents login/logout failures
+                </li>
+                <li style="padding: 10px 0; border-bottom: 1px solid #eee;">
+                    <i class="fas fa-check-circle" style="color: #28a745; margin-right: 10px;"></i>
+                    <strong>Activity Logging</strong> - Comprehensive logging for debugging and monitoring
+                </li>
+            </ul>
+        </div>
+        <div class="col-md-6">
+            <ul style="list-style: none; padding: 0;">
+                <li style="padding: 10px 0; border-bottom: 1px solid #eee;">
+                    <i class="fas fa-check-circle" style="color: #28a745; margin-right: 10px;"></i>
+                    <strong>Cron Job Automation</strong> - Automated cron jobs for session checking (every 5 minutes)
+                </li>
+                <li style="padding: 10px 0; border-bottom: 1px solid #eee;">
+                    <i class="fas fa-check-circle" style="color: #28a745; margin-right: 10px;"></i>
+                    <strong>Session Tracker Model</strong> - Custom model to track user sessions and activity
+                </li>
+                <li style="padding: 10px 0; border-bottom: 1px solid #eee;">
+                    <i class="fas fa-check-circle" style="color: #28a745; margin-right: 10px;"></i>
+                    <strong>Cleanup Mechanism</strong> - Automatic cleanup of old inactive session records
+                </li>
+                <li style="padding: 10px 0; border-bottom: 1px solid #eee;">
+                    <i class="fas fa-check-circle" style="color: #28a745; margin-right: 10px;"></i>
+                    <strong>Real-time Monitoring</strong> - View active sessions and login duration in real-time
+                </li>
+                <li style="padding: 10px 0; border-bottom: 1px solid #eee;">
+                    <i class="fas fa-check-circle" style="color: #28a745; margin-right: 10px;"></i>
+                    <strong>HR Attendance Integration</strong> - Seamlessly integrates with Odoo HR Attendance module
+                </li>
+                <li style="padding: 10px 0; border-bottom: 1px solid #eee;">
+                    <i class="fas fa-check-circle" style="color: #28a745; margin-right: 10px;"></i>
+                    <strong>Attendance Dashboard</strong> - View all attendance records in standard HR Attendance views
+                </li>
+                <li style="padding: 10px 0; border-bottom: 1px solid #eee;">
+                    <i class="fas fa-check-circle" style="color: #28a745; margin-right: 10px;"></i>
+                    <strong>Multi-session Support</strong> - Handles multiple sessions and browser tabs correctly
+                </li>
+                <li style="padding: 10px 0; border-bottom: 1px solid #eee;">
+                    <i class="fas fa-check-circle" style="color: #28a745; margin-right: 10px;"></i>
+                    <strong>User-friendly</strong> - Works automatically without any user configuration needed
+                </li>
+                <li style="padding: 10px 0; border-bottom: 1px solid #eee;">
+                    <i class="fas fa-check-circle" style="color: #28a745; margin-right: 10px;"></i>
+                    <strong>Database Safe</strong> - Uses savepoints and error handling to prevent data corruption
+                </li>
+                <li style="padding: 10px 0; border-bottom: 1px solid #eee;">
+                    <i class="fas fa-check-circle" style="color: #28a745; margin-right: 10px;"></i>
+                    <strong>Performance Optimized</strong> - Efficient tracking with minimal database overhead
+                </li>
+            </ul>
+        </div>
+    </div>
+</section>
+
+<!-- Technical Specifications -->
+<section class="container" style="margin-top: 50px; margin-bottom: 50px; background: #f8f9fa; padding: 40px; border-radius: 10px;">
+    <h2 class="oe_slogan" style="font-size: 32px; color: #1495c9; text-align: center; margin-bottom: 40px;">
+        <i class="fas fa-cogs"></i> Technical Specifications
+    </h2>
+    <div class="row">
+        <div class="col-md-4 text-center" style="padding: 20px;">
+            <i class="fas fa-code" style="font-size: 48px; color: #1495c9; margin-bottom: 15px;"></i>
+            <h4 style="color: #1495c9; font-weight: 600;">Odoo Version</h4>
+            <p style="font-size: 18px; color: #666;">Odoo 19.0</p>
+        </div>
+        <div class="col-md-4 text-center" style="padding: 20px;">
+            <i class="fas fa-plug" style="font-size: 48px; color: #1495c9; margin-bottom: 15px;"></i>
+            <h4 style="color: #1495c9; font-weight: 600;">Dependencies</h4>
+            <p style="font-size: 18px; color: #666;">base, hr, hr_attendance</p>
+        </div>
+        <div class="col-md-4 text-center" style="padding: 20px;">
+            <i class="fas fa-shield-alt" style="font-size: 48px; color: #1495c9; margin-bottom: 15px;"></i>
+            <h4 style="color: #1495c9; font-weight: 600;">License</h4>
+            <p style="font-size: 18px; color: #666;">AGPL-3</p>
+        </div>
+    </div>
+    <div class="row" style="margin-top: 30px;">
+        <div class="col-md-6 text-center" style="padding: 20px;">
+            <i class="fas fa-clock" style="font-size: 48px; color: #1495c9; margin-bottom: 15px;"></i>
+            <h4 style="color: #1495c9; font-weight: 600;">Cron Job Interval</h4>
+            <p style="font-size: 18px; color: #666;">Every 5 minutes (inactive session check)</p>
+        </div>
+        <div class="col-md-6 text-center" style="padding: 20px;">
+            <i class="fas fa-hourglass-half" style="font-size: 48px; color: #1495c9; margin-bottom: 15px;"></i>
+            <h4 style="color: #1495c9; font-weight: 600;">Inactivity Threshold</h4>
+            <p style="font-size: 18px; color: #666;">15 minutes (auto check-out)</p>
+        </div>
+    </div>
+</section>
+
+<!-- How It Works Section -->
+<section class="container" style="margin-top: 50px; margin-bottom: 50px;">
+    <h2 class="oe_slogan" style="font-size: 32px; color: #1495c9; text-align: center; margin-bottom: 40px;">
+        <i class="fas fa-sitemap"></i> How It Works
+    </h2>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="feature-card">
+                <h4 style="color: #1495c9; font-weight: 600; margin-bottom: 20px;">
+                    <i class="fas fa-sign-in-alt"></i> Login Flow
+                </h4>
+                <ol style="line-height: 2; font-size: 16px; color: #666;">
+                    <li>User enters credentials and logs into Odoo</li>
+                    <li>Module detects successful authentication</li>
+                    <li>Finds employee record linked to the user</li>
+                    <li>Checks if employee already has active check-in</li>
+                    <li>Creates new attendance record with check-in timestamp</li>
+                    <li>Creates session tracker for activity monitoring</li>
+                </ol>
+            </div>
+        </div>
+        <div class="col-md-12">
+            <div class="feature-card" style="margin-top: 20px;">
+                <h4 style="color: #1495c9; font-weight: 600; margin-bottom: 20px;">
+                    <i class="fas fa-sign-out-alt"></i> Logout Flow
+                </h4>
+                <ol style="line-height: 2; font-size: 16px; color: #666;">
+                    <li>User clicks logout button</li>
+                    <li>Module intercepts logout request</li>
+                    <li>Finds latest attendance without check-out</li>
+                    <li>Updates attendance record with check-out timestamp</li>
+                    <li>Deactivates session tracker</li>
+                    <li>Completes logout process</li>
+                </ol>
+            </div>
+        </div>
+        <div class="col-md-12">
+            <div class="feature-card" style="margin-top: 20px;">
+                <h4 style="color: #1495c9; font-weight: 600; margin-bottom: 20px;">
+                    <i class="fas fa-window-close"></i> Browser Close Detection
+                </h4>
+                <ol style="line-height: 2; font-size: 16px; color: #666;">
+                    <li>Module tracks user activity on every HTTP request</li>
+                    <li>Updates last activity timestamp in session tracker</li>
+                    <li>Cron job runs every 5 minutes</li>
+                    <li>Checks for sessions with no activity for 15+ minutes</li>
+                    <li>Automatically creates check-out for inactive sessions</li>
+                    <li>Cleans up old inactive session records</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Support Section -->
+<section class="oe_container oe_dark" style="margin-top: 50px;">
+    <div class="oe_mt16 oe_mb16">
+        <h2 class="oe_slogan" style="font-size: 32px;">
+            <i class="fas fa-life-ring"></i> Get Help From Us!
+        </h2>
+        <p style="text-align: center; font-size: 18px; color: #666; margin-top: 20px;">
+            Need assistance? Our expert team is here to help you with implementation, customization, and support.
+        </p>
+    </div>
+    <div class="oe_slogan">
+        <a class="btn btn-primary btn-md mt8" style="color: #FFFFFF !important; padding: 12px 30px; font-size: 16px; margin: 5px;" href="mailto:m.ahmadodoo5@gmail.com"
+            target="_blank">
+            <i class="fas fa-envelope"></i>
+            Email: m.ahmadodoo5@gmail.com
+        </a>
+        <a class="btn btn-primary btn-md mt8" style="color: #FFFFFF !important; padding: 12px 30px; font-size: 16px; margin: 5px;"
+            href="tel:03056567570" target="_blank">
+            <i class="fas fa-phone"></i>
+            Phone: 0305-6567570
+        </a>
+    </div>
+</section>
+
+<!-- Services Section -->
+<div class="row pb-sm-5 px-1 pb-4" style="margin-top: 50px;">
+    <h2 class="oe_slogan w-100" style="font-size: 32px; color: #1495c9; text-align: center; margin-bottom: 40px;">
+        <i class="fas fa-briefcase"></i> Our Services
+    </h2>
+    <div class="col-12 col-sm-6 col-md-4" style="margin-bottom: 20px;">
+        <div class="card service-card">
+            <a href="#">
+                <div style="padding: 1.25rem;" class="text-center">
+                    <img src="images/Implementation.png" alt="Odoo Implementation" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                    <div style="display:none; font-size: 48px; color: #1495c9;">
+                        <i class="fas fa-rocket"></i>
+                    </div>
+                </div>
+                <div class="card-body text-center">
+                    <h5 class="card-title" style="font-size: 19px;">Odoo Implementation</h5>
+                </div>
+            </a>
+        </div>
+    </div>
+    <div class="col-12 col-sm-6 col-md-4" style="margin-bottom: 20px;">
+        <div class="card service-card">
+            <a href="#">
+                <div style="padding: 1.25rem;" class="text-center">
+                    <img src="images/Customization.png" alt="Odoo Customization" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                    <div style="display:none; font-size: 48px; color: #1495c9;">
+                        <i class="fas fa-sliders-h"></i>
+                    </div>
+                </div>
+                <div class="card-body text-center">
+                    <h5 class="card-title" style="font-size: 19px;">Odoo Customization</h5>
+                </div>
+            </a>
+        </div>
+    </div>
+    <div class="col-12 col-sm-6 col-md-4" style="margin-bottom: 20px;">
+        <div class="card service-card">
+            <a href="#">
+                <div style="padding: 1.25rem;" class="text-center">
+                    <img src="images/Development.png" alt="Odoo Development" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                    <div style="display:none; font-size: 48px; color: #1495c9;">
+                        <i class="fas fa-code"></i>
+                    </div>
+                </div>
+                <div class="card-body text-center">
+                    <h5 class="card-title" style="font-size: 19px;">Odoo Development</h5>
+                </div>
+            </a>
+        </div>
+    </div>
+    <div class="col-12 col-sm-6 col-md-4" style="margin-bottom: 20px;">
+        <div class="card service-card">
+            <a href="#">
+                <div style="padding: 1.25rem;" class="text-center">
+                    <img src="images/migration.png" alt="Odoo Migration" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                    <div style="display:none; font-size: 48px; color: #1495c9;">
+                        <i class="fas fa-exchange-alt"></i>
+                    </div>
+                </div>
+                <div class="card-body text-center">
+                    <h5 class="card-title" style="font-size: 19px;">Odoo Migration</h5>
+                </div>
+            </a>
+        </div>
+    </div>
+    <div class="col-12 col-sm-6 col-md-4" style="margin-bottom: 20px;">
+        <div class="card service-card">
+            <a href="#">
+                <div style="padding: 1.25rem;" class="text-center">
+                    <img src="images/Integration.png" alt="Odoo Integration" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                    <div style="display:none; font-size: 48px; color: #1495c9;">
+                        <i class="fas fa-link"></i>
+                    </div>
+                </div>
+                <div class="card-body text-center">
+                    <h5 class="card-title" style="font-size: 19px;">Odoo Integration</h5>
+                </div>
+            </a>
+        </div>
+    </div>
+    <div class="col-12 col-sm-6 col-md-4" style="margin-bottom: 20px;">
+        <div class="card service-card">
+            <a href="#">
+                <div style="padding: 1.25rem;" class="text-center">
+                    <img src="images/Consulting.png" alt="Odoo Consulting" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                    <div style="display:none; font-size: 48px; color: #1495c9;">
+                        <i class="fas fa-user-tie"></i>
+                    </div>
+                </div>
+                <div class="card-body text-center">
+                    <h5 class="card-title" style="font-size: 19px;">Odoo Consulting</h5>
+                </div>
+            </a>
+        </div>
+    </div>
+    <div class="col-12 col-sm-6 col-md-4" style="margin-bottom: 20px;">
+        <div class="card service-card">
+            <a href="#">
+                <div style="padding: 1.25rem;" class="text-center">
+                    <img src="images/Odoo Support.png" alt="Odoo Support" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                    <div style="display:none; font-size: 48px; color: #1495c9;">
+                        <i class="fas fa-headset"></i>
+                    </div>
+                </div>
+                <div class="card-body text-center">
+                    <h5 class="card-title" style="font-size: 19px;">Odoo Support</h5>
+                </div>
+            </a>
+        </div>
+    </div>
+    <div class="col-12 col-sm-6 col-md-4" style="margin-bottom: 20px;">
+        <div class="card service-card">
+            <a href="#">
+                <div style="padding: 1.25rem;" class="text-center">
+                    <img src="images/Odoo Theme Development.png" alt="Odoo Theme Development" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                    <div style="display:none; font-size: 48px; color: #1495c9;">
+                        <i class="fas fa-paint-brush"></i>
+                    </div>
+                </div>
+                <div class="card-body text-center">
+                    <h5 class="card-title" style="font-size: 19px;">Odoo Theme Development</h5>
+                </div>
+            </a>
+        </div>
+    </div>
+    <div class="col-12 col-sm-6 col-md-4" style="margin-bottom: 20px;">
+        <div class="card service-card">
+            <a href="#">
+                <div style="padding: 1.25rem;" class="text-center">
+                    <img src="images/CMS.png" alt="Odoo CMS Development" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                    <div style="display:none; font-size: 48px; color: #1495c9;">
+                        <i class="fas fa-file-alt"></i>
+                    </div>
+                </div>
+                <div class="card-body text-center">
+                    <h5 class="card-title" style="font-size: 19px;">Odoo CMS Development</h5>
+                </div>
+            </a>
+        </div>
+    </div>
+    <div class="col-12 col-sm-6 col-md-4" style="margin-bottom: 20px;">
+        <div class="card service-card">
+            <a href="#">
+                <div style="padding: 1.25rem;" class="text-center">
+                    <img src="images/E-Commerce.png" alt="Odoo Ecommerce Development" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                    <div style="display:none; font-size: 48px; color: #1495c9;">
+                        <i class="fas fa-shopping-cart"></i>
+                    </div>
+                </div>
+                <div class="card-body text-center">
+                    <h5 class="card-title" style="font-size: 19px;">Odoo Ecommerce Development</h5>
+                </div>
+            </a>
+        </div>
+    </div>
+    <div class="col-12 col-sm-6 col-md-4" style="margin-bottom: 20px;">
+        <div class="card service-card">
+            <a href="#">
+                <div style="padding: 1.25rem;" class="text-center">
+                    <img src="images/Mobile Application.png" alt="Mobile Application Development" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                    <div style="display:none; font-size: 48px; color: #1495c9;">
+                        <i class="fas fa-mobile-alt"></i>
+                    </div>
+                </div>
+                <div class="card-body text-center">
+                    <h5 class="card-title" style="font-size: 19px;">Mobile Application Development</h5>
+                </div>
+            </a>
+        </div>
+    </div>
+    <div class="col-12 col-sm-6 col-md-4" style="margin-bottom: 20px;">
+        <div class="card service-card">
+            <a href="#">
+                <div style="padding: 1.25rem;" class="text-center">
+                    <img src="images/Odoo Training.png" alt="Odoo Training" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                    <div style="display:none; font-size: 48px; color: #1495c9;">
+                        <i class="fas fa-chalkboard-teacher"></i>
+                    </div>
+                </div>
+                <div class="card-body text-center">
+                    <h5 class="card-title" style="font-size: 19px;">Odoo Training</h5>
+                </div>
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Social Media Section -->
+<section class="container oe_dark" style="margin-top: 50px; margin-bottom: 50px;">
+    <h2 class="oe_slogan" style="font-size: 32px; text-align: center; margin-bottom: 30px;">
+        <i class="fas fa-share-alt"></i> Please Follow Us On
+    </h2>
+    <div class="oe_slogan">
+        <a class="btn btn-primary" href="#" target="_blank"
+            style="background-color: #3B5998; padding: 12px 20px; margin: 5px; border-radius: 5px;">
+            <span class="fab fa-facebook" style="font-size: 20px;"></span>
+        </a>
+        <a class="btn btn-primary" style="background-color: #55ACEE; padding: 12px 20px; margin: 5px; border-radius: 5px;" href="#"
+            target="_blank">
+            <span class="fab fa-twitter" style="font-size: 20px;"></span>
+        </a>
+        <a class="btn btn-primary" style="background-color: #007BB6; padding: 12px 20px; margin: 5px; border-radius: 5px;"
+            href="https://www.linkedin.com/in/ahmad-odoo5/" target="_blank">
+            <span class="fab fa-linkedin" style="font-size: 20px;"></span>
+        </a>
+        <a class="btn btn-primary" style="background-color: #E4405F; padding: 12px 20px; margin: 5px; border-radius: 5px;"
+            href="https://www.instagram.com/ahmad_odoo5/" target="_blank">
+            <span class="fab fa-instagram" style="font-size: 20px;"></span>
+        </a>
+        <a class="btn btn-primary" style="background-color: #444444; padding: 12px 20px; margin: 5px; border-radius: 5px;" href="https://github.com/Ahmadodoo5/"
+            target="_blank">
+            <span class="fab fa-github" style="font-size: 20px;"></span>
+        </a>
+    </div>
+</section>
+
+</body>
+</html>

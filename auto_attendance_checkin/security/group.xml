@@ -1,0 +1,7 @@
+<odoo>
+    <data >
+        <record id="group_late_attendance_notify" model="res.groups">
+            <field name="name">Late Arrival Notification</field>
+        </record>
+    </data>
+</odoo>

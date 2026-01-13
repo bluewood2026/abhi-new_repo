@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_user_session_tracker_user,user.session.tracker.user,model_user_session_tracker,base.group_user,1,0,0,0
+access_user_session_tracker_manager,user.session.tracker.manager,model_user_session_tracker,base.group_system,1,1,1,1
+
+

@@ -1,0 +1,114 @@
+================================================================================
+SERVER ACTION CODE FIX - Check-out Code
+================================================================================
+
+Yeh error aa raha hai kyunki server action mein 'fields' available nahi hai.
+Server actions mein Python ka 'datetime' module use karna hoga.
+
+ERROR CODE (Galt):
+------------------
+employee = env['hr.employee'].search([('user_id', '=', record.id)], limit=1)
+if employee:
+    attendance = env['hr.attendance'].search([
+        ('employee_id', '=', employee.id),
+        ('check_out', '=', False)
+    ], limit=1)
+
+    if attendance:
+        attendance.write({
+            'check_out': fields.Datetime.now()  # ❌ ERROR: fields not defined
+        })
+
+CORRECT CODE (Sahi):
+--------------------
+from datetime import datetime
+
+employee = env['hr.employee'].search([('user_id', '=', record.id)], limit=1)
+if employee:
+    attendance = env['hr.attendance'].search([
+        ('employee_id', '=', employee.id),
+        ('check_out', '=', False)
+    ], limit=1)
+
+    if attendance:
+        attendance.write({
+            'check_out': datetime.now()  # ✅ CORRECT: Use datetime.now()
+        })
+
+
+================================================================================
+COMPLETE FIXED SERVER ACTION CODE
+================================================================================
+
+Copy this complete code into your server action:
+
+--- START CODE ---
+from datetime import datetime
+
+# Get employee linked to user
+employee = env['hr.employee'].search([
+    ('user_id', '=', record.id)
+], limit=1)
+
+if employee:
+    # Find attendance without check-out
+    attendance = env['hr.attendance'].search([
+        ('employee_id', '=', employee.id),
+        ('check_out', '=', False)
+    ], limit=1, order='check_in desc')
+    
+    if attendance:
+        # Create check-out
+        attendance.write({
+            'check_out': datetime.now()
+        })
+--- END CODE ---
+
+
+================================================================================
+ALTERNATIVE: Using fields.Datetime (if available in context)
+================================================================================
+
+Agar aap Odoo ke fields module ko import karna chahte hain:
+
+--- START CODE ---
+from odoo import fields
+from datetime import datetime
+
+employee = env['hr.employee'].search([('user_id', '=', record.id)], limit=1)
+if employee:
+    attendance = env['hr.attendance'].search([
+        ('employee_id', '=', employee.id),
+        ('check_out', '=', False)
+    ], limit=1)
+    
+    if attendance:
+        # Option 1: Use datetime.now() (Recommended)
+        attendance.write({
+            'check_out': datetime.now()
+        })
+        
+        # OR Option 2: Use fields.Datetime.now() if imported
+        # attendance.write({
+        #     'check_out': fields.Datetime.now()
+        # })
+--- END CODE ---
+
+
+================================================================================
+QUICK FIX
+================================================================================
+
+Sirf ek line change karein:
+
+CHANGE FROM:
+    'check_out': fields.Datetime.now()
+
+CHANGE TO:
+    'check_out': datetime.now()
+
+Aur code ke top par yeh add karein:
+from datetime import datetime
+
+================================================================================
+
