@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_po_so_wizard_user,po.so.wizard.user,model_po_so_wizard,,1,1,1,1
+access_po_so_wizard_manager,po.so.wizard.manager,model_po_so_wizard,,,,,
+access_purchase_bill_wizard_user,purchase.bill.wizard.user,model_purchase_bill_wizard,,1,1,1,1
+access_purchase_bill_wizard_manager,purchase.bill.wizard.manager,model_purchase_bill_wizard,,,,,

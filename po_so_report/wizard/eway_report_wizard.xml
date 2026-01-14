@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_po_so_wizard_form" model="ir.ui.view">
+        <field name="name">po.so.wizard.form</field>
+        <field name="model">po.so.wizard</field>
+        <field name="arch" type="xml">
+            <form string="PO/SO Report">
+                <group>
+                    <group>
+                        <field name="project_ids" widget="many2many_tags" required="1"
+                               placeholder="Select one or more projects..."
+                               context="{'default_use_tasks': False}"/>
+                    </group>
+                    <group>
+                        <field name="report_type" widget="radio"/>
+                    </group>
+                </group>
+                <footer>
+                    <button string="Generate PDF Report"
+                            name="generate_report"
+                            type="object"
+                            class="btn-primary"/>
+                    <button string="Cancel"
+                            class="btn-secondary"
+                            special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_po_so_wizard" model="ir.actions.act_window">
+        <field name="name">PO/SO Report</field>
+        <field name="res_model">po.so.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <menuitem id="menu_po_so_report"
+              name="PO/SO Report"
+              parent="account.menu_finance_reports"
+              action="action_po_so_wizard"
+              sequence="100"/>
+
+    <!-- =====================================================
+         PURCHASE BILL WIZARD
+    ====================================================== -->
+    <record id="view_purchase_bill_wizard_form" model="ir.ui.view">
+        <field name="name">purchase.bill.wizard.form</field>
+        <field name="model">purchase.bill.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Purchase Bill Report">
+                <group>
+                    <field name="project_id" widget="many2one" required="1"
+                           placeholder="Select project..."
+                           context="{'default_use_tasks': False}"/>
+                </group>
+                <footer>
+                    <button string="Generate PDF Report"
+                            name="generate_report"
+                            type="object"
+                            class="btn-primary"/>
+                    <button string="Cancel"
+                            class="btn-secondary"
+                            special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_purchase_bill_wizard" model="ir.actions.act_window">
+        <field name="name">Purchase Bill Report</field>
+        <field name="res_model">purchase.bill.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <menuitem id="menu_purchase_bill_report"
+              name="Purchase Bill Report"
+              parent="account.menu_finance_reports"
+              action="action_purchase_bill_wizard"
+              sequence="101"/>
+</odoo>

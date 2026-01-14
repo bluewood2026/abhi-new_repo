@@ -1,0 +1,575 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- =====================================================
+         PAPERFORMAT (LANDSCAPE)
+    ====================================================== -->
+    <record id="paperformat_report_po_so" model="report.paperformat">
+        <field name="name">PO/SO Report</field>
+        <field name="default" eval="False"/>
+        <field name="format">A4</field>
+        <field name="orientation">Landscape</field>
+
+        <field name="margin_top">10</field>
+        <field name="margin_bottom">10</field>
+        <field name="margin_left">4</field>
+        <field name="margin_right">4</field>
+
+        <field name="header_line" eval="False"/>
+        <field name="dpi">90</field>
+    </record>
+
+    <!-- =====================================================
+         REPORT ACTIONS
+    ====================================================== -->
+    <record id="action_report_sale_order" model="ir.actions.report">
+        <field name="name">Sale Order Report</field>
+        <field name="model">po.so.wizard</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">po_so_report.report_sale_order_template</field>
+        <field name="report_file">po_so_report.report_sale_order_template</field>
+        <field name="paperformat_id" ref="paperformat_report_po_so"/>
+        <field name="binding_model_id" ref="model_po_so_wizard"/>
+        <field name="binding_type">report</field>
+        <field name="print_report_name">'Sale_Order_Report'</field>
+    </record>
+
+    <record id="action_report_purchase_order" model="ir.actions.report">
+        <field name="name">Purchase Order Report</field>
+        <field name="model">po.so.wizard</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">po_so_report.report_purchase_order_template</field>
+        <field name="report_file">po_so_report.report_purchase_order_template</field>
+        <field name="paperformat_id" ref="paperformat_report_po_so"/>
+        <field name="binding_model_id" ref="model_po_so_wizard"/>
+        <field name="binding_type">report</field>
+        <field name="print_report_name">'Purchase_Order_Report'</field>
+    </record>
+
+    <!-- =====================================================
+         SALE ORDER REPORT TEMPLATE
+    ====================================================== -->
+    <template id="report_sale_order_template">
+        <t t-name="po_so_report.report_sale_order_template">
+            <t t-call="web.html_container">
+                <t t-call="web.basic_layout">
+
+                    <style>
+                        .page {
+                        width: 100%;
+                        }
+                        table {
+                        font-size: 10px;
+                        }
+                        th, td {
+                        padding: 4px !important;
+                        }
+                    </style>
+
+                    <div class="page">
+
+                        <h2 class="text-center mb-4" style="color:#17a2b8;">
+                            Sale Order Report
+                        </h2>
+
+                        <!-- GROUP BY PROJECT -->
+                        <t t-set="projects" t-value="{}"/>
+                        <t t-foreach="report_data" t-as="rec">
+                            <t t-set="dummy"
+                               t-value="projects.setdefault(rec.get('project_name'), []).append(rec)"/>
+                        </t>
+
+                        <t t-foreach="projects.items()" t-as="proj">
+                            <t t-set="project_name" t-value="proj[0]"/>
+                            <t t-set="rows" t-value="proj[1]"/>
+
+                            <div style="background:#e3f2fd; padding:10px; margin-bottom:10px; border-left:4px solid #17a2b8;">
+                                <strong>Project Name:</strong>
+                                <t t-esc="project_name"/>
+                            </div>
+
+                            <table class="table table-bordered table-sm">
+                                <thead style="background:#ADD8E6;">
+                                    <tr>
+                                        <th>Sr. No</th>
+                                        <th>SO</th>
+                                        <th>Customer/Vendor Name</th>
+                                        <th class="text-right">SO/PO Total</th>
+                                        <th class="text-right">Invoice Total</th>
+                                        <th>Invoice Items</th>
+                                        <th class="text-right">Diff (SO/PO - Invoice)</th>
+
+                                        <!-- Dynamic Payment Columns -->
+                                        <t t-if="max_payments &gt; 0">
+                                            <t t-foreach="payment_range" t-as="pay_idx">
+                                                <th class="text-right">Payment
+                                                    <t t-esc="pay_idx + 1"/>
+                                                </th>
+                                            </t>
+                                        </t>
+
+                                        <th class="text-right">Total Payment</th>
+                                        <th class="text-right">Diff (Invoice - Payment)</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    <t t-set="sr" t-value="0"/>
+                                    <t t-foreach="rows" t-as="data">
+                                        <t t-set="sr" t-value="sr + 1"/>
+
+                                        <tr>
+                                            <td>
+                                                <t t-esc="sr"/>
+                                            </td>
+                                            <td>
+                                                <t t-esc="data.get('so_po_number','-')"/>
+                                            </td>
+                                            <td>
+                                                <t t-esc="data.get('vendor_name','-')"/>
+                                            </td>
+                                            <td class="text-right">
+                                                <t t-esc="'{:,.2f}'.format(data.get('so_po_total',0))"/>
+                                            </td>
+                                            <td class="text-right">
+                                                <t t-esc="'{:,.2f}'.format(data.get('invoice_total',0))"/>
+                                            </td>
+                                            <td>
+                                                <t t-esc="data.get('invoice_items','')"/>
+                                            </td>
+                                            <td class="text-right">
+                                                <t t-esc="'{:,.2f}'.format(data.get('diff_so_invoice',0))"/>
+                                            </td>
+
+                                            <!-- Dynamic Payment Columns -->
+                                            <t t-if="max_payments &gt; 0">
+                                                <t t-set="payments" t-value="data.get('payments',[])"/>
+                                                <t t-foreach="payment_range" t-as="pay_idx">
+                                                    <td class="text-right">
+                                                        <t t-if="pay_idx &lt; len(payments)">
+                                                            <t t-esc="'{:,.2f}'.format(payments[pay_idx].get('amount',0))"/>
+                                                        </t>
+                                                        <t t-if="pay_idx &gt;= len(payments)">
+                                                            -
+                                                        </t>
+                                                    </td>
+                                                </t>
+                                            </t>
+
+                                            <td class="text-right font-weight-bold">
+                                                <t t-esc="'{:,.2f}'.format(data.get('payment_total',0))"/>
+                                            </td>
+                                            <td class="text-right font-weight-bold">
+                                                <t t-esc="'{:,.2f}'.format(data.get('diff_invoice_payment',0))"/>
+                                            </td>
+                                        </tr>
+                                    </t>
+
+                                    <!-- Totals Row -->
+                                    <t t-set="totals" t-value="project_totals.get(project_name, {})"/>
+                                    <tr style="background:#f0f0f0; font-weight:bold;">
+                                        <td colspan="3" class="text-right">
+                                            <strong>Total:</strong>
+                                        </td>
+                                        <td class="text-right">
+                                            <t t-esc="'{:,.2f}'.format(totals.get('total_so_po',0))"/>
+                                        </td>
+                                        <td class="text-right">
+                                            <t t-esc="'{:,.2f}'.format(totals.get('total_invoice',0))"/>
+                                        </td>
+                                        <td></td>
+                                        <td class="text-right">
+                                            <t t-esc="'{:,.2f}'.format(totals.get('total_diff_so_invoice',0))"/>
+                                        </td>
+
+                                        <!-- Dynamic Payment Columns - Empty for totals -->
+                                        <t t-if="max_payments &gt; 0">
+                                            <t t-foreach="payment_range" t-as="pay_idx">
+                                                <td class="text-right">-</td>
+                                            </t>
+                                        </t>
+
+                                        <td class="text-right">
+                                            <t t-esc="'{:,.2f}'.format(totals.get('total_payment',0))"/>
+                                        </td>
+                                        <td class="text-right">
+                                            <t t-esc="'{:,.2f}'.format(totals.get('total_diff_invoice_payment',0))"/>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            <hr/>
+                        </t>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+    <!-- =====================================================
+         PURCHASE ORDER REPORT TEMPLATE
+    ====================================================== -->
+    <template id="report_purchase_order_template">
+        <t t-name="po_so_report.report_purchase_order_template">
+            <t t-call="web.html_container">
+                <t t-call="web.basic_layout">
+
+                    <style>
+                        .page {
+                        width: 100%;
+                        }
+                        table {
+                        font-size: 10px;
+                        }
+                        th, td {
+                        padding: 4px !important;
+                        }
+                    </style>
+
+                    <div class="page">
+
+                        <h2 class="text-center mb-4" style="color:#17a2b8;">
+                            Purchase Order Report
+                        </h2>
+
+                        <!-- GROUP BY PROJECT -->
+                        <t t-set="projects" t-value="{}"/>
+                        <t t-foreach="report_data" t-as="rec">
+                            <t t-set="dummy"
+                               t-value="projects.setdefault(rec.get('project_name'), []).append(rec)"/>
+                        </t>
+
+                        <t t-foreach="projects.items()" t-as="proj">
+                            <t t-set="project_name" t-value="proj[0]"/>
+                            <t t-set="rows" t-value="proj[1]"/>
+
+                            <div style="background:#e3f2fd; padding:10px; margin-bottom:10px; border-left:4px solid #17a2b8;">
+                                <strong>Project Name:</strong>
+                                <t t-esc="project_name"/>
+                            </div>
+
+                            <table class="table table-bordered table-sm">
+                                <thead style="background:#ADD8E6;">
+                                    <tr>
+                                        <th>Sr</th>
+                                        <th>PO</th>
+                                        <th>Customer / Vendor</th>
+                                        <th class="text-right">Quote</th>
+                                        <th class="text-right">Invoice 1</th>
+                                        <th class="text-center">Invoice 1 Date</th>
+                                        <th class="text-right">Invoice 2</th>
+                                        <th class="text-center">Invoice 2 Date</th>
+                                        <th class="text-right">Total Invoice</th>
+                                        <th class="text-right">Payment 1</th>
+                                        <th class="text-center">Payment 1 Date</th>
+                                        <th class="text-right">Payment 2</th>
+                                        <th class="text-center">Payment 2 Date</th>
+                                        <th class="text-right">Total Payment</th>
+                                        <th class="text-right">Amount</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    <t t-set="sr" t-value="0"/>
+                                    <t t-foreach="rows" t-as="data">
+                                        <t t-set="sr" t-value="sr + 1"/>
+
+                                        <tr>
+                                            <td>
+                                                <t t-esc="sr"/>
+                                            </td>
+                                            <td>
+                                                <t t-esc="data.get('so_po_number','-')"/>
+                                            </td>
+                                            <td>
+                                                <t t-esc="data.get('vendor_name','-')"/>
+                                            </td>
+                                            <td class="text-right">
+                                                <t t-esc="'{:,.2f}'.format(data.get('quote',0))"/>
+                                            </td>
+
+                                            <!-- Invoice 1 -->
+                                            <t t-set="invoices" t-value="data.get('invoices',[])"/>
+                                            <td class="text-right">
+                                                <t t-if="len(invoices) &gt; 0">
+                                                    <t t-esc="'{:,.2f}'.format(invoices[0].get('amount',0))"/>
+                                                </t>
+                                                <t t-if="len(invoices) == 0">
+                                                    0.00
+                                                </t>
+                                            </td>
+                                            <td class="text-center">
+                                                <t t-if="len(invoices) &gt; 0 and invoices[0].get('date')">
+                                                    <t t-esc="invoices[0].get('date').strftime('%d-%m-%Y')"/>
+                                                </t>
+                                            </td>
+
+                                            <!-- Invoice 2 -->
+                                            <td class="text-right">
+                                                <t t-if="len(invoices) &gt; 1">
+                                                    <t t-esc="'{:,.2f}'.format(invoices[1].get('amount',0))"/>
+                                                </t>
+                                                <t t-if="len(invoices) &lt;= 1">
+                                                    0.00
+                                                </t>
+                                            </td>
+                                            <td class="text-center">
+                                                <t t-if="len(invoices) &gt; 1 and invoices[1].get('date')">
+                                                    <t t-esc="invoices[1].get('date').strftime('%d-%m-%Y')"/>
+                                                </t>
+                                            </td>
+
+                                            <td class="text-right font-weight-bold">
+                                                <t t-esc="'{:,.2f}'.format(data.get('total_invoice',0))"/>
+                                            </td>
+
+                                            <!-- Payment 1 -->
+                                            <t t-set="payments" t-value="data.get('payments',[])"/>
+                                            <td class="text-right">
+                                                <t t-if="len(payments) &gt; 0">
+                                                    <t t-esc="'{:,.2f}'.format(payments[0].get('amount',0))"/>
+                                                </t>
+                                                <t t-if="len(payments) == 0">
+                                                    0.00
+                                                </t>
+                                            </td>
+                                            <td class="text-center">
+                                                <t t-if="len(payments) &gt; 0 and payments[0].get('date')">
+                                                    <t t-esc="payments[0].get('date').strftime('%d-%m-%Y')"/>
+                                                </t>
+                                            </td>
+
+                                            <!-- Payment 2 -->
+                                            <td class="text-right">
+                                                <t t-if="len(payments) &gt; 1">
+                                                    <t t-esc="'{:,.2f}'.format(payments[1].get('amount',0))"/>
+                                                </t>
+                                                <t t-if="len(payments) &lt;= 1">
+                                                    0.00
+                                                </t>
+                                            </td>
+                                            <td class="text-center">
+                                                <t t-if="len(payments) &gt; 1 and payments[1].get('date')">
+                                                    <t t-esc="payments[1].get('date').strftime('%d-%m-%Y')"/>
+                                                </t>
+                                            </td>
+
+                                            <td class="text-right font-weight-bold">
+                                                <t t-esc="'{:,.2f}'.format(data.get('total_payment',0))"/>
+                                            </td>
+
+                                            <td class="text-right font-weight-bold">
+                                                <t t-esc="'{:,.2f}'.format(
+                                                    data.get('quote',0) - data.get('total_payment',0)
+                                                )"/>
+                                            </td>
+                                        </tr>
+                                    </t>
+
+                                    <!-- Totals Row -->
+                                    <t t-set="totals" t-value="project_totals.get(project_name, {})"/>
+                                    <tr style="background:#f0f0f0; font-weight:bold;">
+                                        <td colspan="3" class="text-right">
+                                            <strong>Total:</strong>
+                                        </td>
+                                        <td class="text-right">
+                                            <t t-esc="'{:,.2f}'.format(totals.get('total_quote',0))"/>
+                                        </td>
+                                        <td colspan="2"></td>
+                                        <td colspan="2"></td>
+                                        <td class="text-right">
+                                            <t t-esc="'{:,.2f}'.format(totals.get('total_invoice',0))"/>
+                                        </td>
+                                        <td colspan="2"></td>
+                                        <td colspan="2"></td>
+                                        <td class="text-right">
+                                            <t t-esc="'{:,.2f}'.format(totals.get('total_payment',0))"/>
+                                        </td>
+                                        <td class="text-right">
+                                            <t t-esc="'{:,.2f}'.format(totals.get('total_amount',0))"/>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            <hr/>
+                        </t>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+    <!-- =====================================================
+         PURCHASE BILL REPORT ACTION
+    ====================================================== -->
+    <record id="action_report_purchase_bill" model="ir.actions.report">
+        <field name="name">Purchase Bill Report</field>
+        <field name="model">purchase.bill.wizard</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">po_so_report.report_purchase_bill_template</field>
+        <field name="report_file">po_so_report.report_purchase_bill_template</field>
+        <field name="paperformat_id" ref="paperformat_report_po_so"/>
+        <field name="binding_model_id" ref="model_purchase_bill_wizard"/>
+        <field name="binding_type">report</field>
+        <field name="print_report_name">'Purchase_Bill_Report'</field>
+    </record>
+
+    <!-- =====================================================
+         PURCHASE BILL REPORT TEMPLATE
+    ====================================================== -->
+    <template id="report_purchase_bill_template">
+        <t t-name="po_so_report.report_purchase_bill_template">
+            <t t-call="web.html_container">
+                <t t-call="web.basic_layout">
+
+                    <style>
+                        .page {
+                        width: 100%;
+                        }
+                        table {
+                        font-size: 10px;
+                        }
+                        th, td {
+                        padding: 4px !important;
+                        }
+                    </style>
+
+                    <div class="page">
+
+                        <h2 class="text-center mb-4" style="color:#17a2b8;">
+                            Purchase Bill Report
+                        </h2>
+
+                        <div style="background:#e3f2fd; padding:10px; margin-bottom:10px; border-left:4px solid #17a2b8;">
+                            <strong>Project Name:</strong>
+                            <t t-esc="docs.project_id.name"/>
+                        </div>
+
+                        <table class="table table-bordered table-sm">
+                            <thead style="background:#ADD8E6;">
+                                <tr>
+                                    <th>Sr. No</th>
+                                    <th>Bill Number</th>
+                                    <th>Bill Date</th>
+                                    <th>Vendor Name</th>
+                                    <th class="text-right">Bill Amount</th>
+
+                                    <!-- Dynamic Payment Columns -->
+                                    <t t-if="max_payments &gt; 0">
+                                        <t t-foreach="payment_range" t-as="pay_idx">
+                                            <th class="text-right">Payment
+                                                <t t-esc="pay_idx + 1"/>
+                                                <br/>
+                                                <small>(Account)</small>
+                                            </th>
+                                        </t>
+                                    </t>
+
+                                    <th class="text-right">Total Payment</th>
+                                    <th class="text-right">Balance</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                <t t-set="sr" t-value="0"/>
+                                <t t-foreach="report_data" t-as="data">
+                                    <t t-set="sr" t-value="sr + 1"/>
+
+                                    <tr>
+                                        <td>
+                                            <t t-esc="sr"/>
+                                        </td>
+                                        <td>
+                                            <t t-esc="data.get('bill_number','-')"/>
+                                        </td>
+                                        <td class="text-center">
+                                            <t t-if="data.get('bill_date')">
+                                                <t t-esc="data.get('bill_date').strftime('%d-%m-%Y')"/>
+                                            </t>
+                                            <t t-if="not data.get('bill_date')">
+                                                -
+                                            </t>
+                                        </td>
+                                        <td>
+                                            <t t-esc="data.get('vendor_name','-')"/>
+                                        </td>
+                                        <td class="text-right">
+                                            $
+                                            <t t-esc="'{:,.2f}'.format(data.get('bill_amount',0))"/>
+                                        </td>
+
+                                        <!-- Dynamic Payment Columns -->
+                                        <t t-if="max_payments &gt; 0">
+                                            <t t-set="payments" t-value="data.get('payments',[])"/>
+                                            <t t-foreach="payment_range" t-as="pay_idx">
+                                                <td class="text-right">
+                                                    <t t-if="pay_idx &lt; len(payments)">
+                                                        <div>
+                                                            $
+                                                            <t t-esc="'{:,.2f}'.format(payments[pay_idx].get('amount',0))"/>
+                                                        </div>
+
+                                                    </t>
+                                                    <t t-if="pay_idx &gt;= len(payments)">
+                                                        -
+                                                    </t>
+                                                </td>
+                                            </t>
+                                        </t>
+
+                                        <td class="text-right font-weight-bold">
+                                            $
+                                            <t t-esc="'{:,.2f}'.format(data.get('payment_total',0))"/>
+                                        </td>
+                                        <td class="text-right font-weight-bold">
+                                            $
+                                            <t t-esc="'{:,.2f}'.format(
+                                                data.get('bill_amount',0) - data.get('payment_total',0)
+                                            )"/>
+                                        </td>
+                                    </tr>
+                                </t>
+
+                                <!-- Totals Row -->
+                                <tr style="background:#f0f0f0; font-weight:bold;">
+                                    <td colspan="4" class="text-right">
+                                        <strong>Total:</strong>
+                                    </td>
+                                    <td class="text-right">
+                                        <strong>
+                                            $
+                                            <t t-esc="'{:,.2f}'.format(total_bill_amount)"/>
+                                        </strong>
+                                    </td>
+
+                                    <!-- Dynamic Payment Columns - Empty for totals -->
+                                    <t t-if="max_payments &gt; 0">
+                                        <t t-foreach="payment_range" t-as="pay_idx">
+                                            <td class="text-right">-</td>
+                                        </t>
+                                    </t>
+
+                                    <td class="text-right">
+                                        <strong>
+                                            $
+                                            <t t-esc="'{:,.2f}'.format(total_payment)"/>
+                                        </strong>
+                                    </td>
+                                    <td class="text-right">
+                                        <strong>
+                                            $
+                                            <t t-esc="'{:,.2f}'.format(total_balance)"/>
+                                        </strong>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+</odoo>
