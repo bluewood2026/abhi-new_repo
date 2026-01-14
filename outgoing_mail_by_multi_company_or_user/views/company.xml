@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+
+    <record id="view_company_master_inherit_add_mail_fields" model="ir.ui.view">
+        <field name="name">view.company.master.inherit.add.mail.fields</field>
+        <field name="model">res.company</field>
+        <field name="inherit_id" ref="base.view_company_form"/>
+        <field name="arch" type="xml">
+            <field name="email" position="after">
+                <field name="accounts_email"/>
+                <field name="default_cc_emails"/>
+            </field>
+        </field>
+    </record>
+</odoo>
