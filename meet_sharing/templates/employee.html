@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>Meet Monitor</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="card">
+
+        <h1>Google Meet Monitor</h1>
+
+        <p>Enter your name and share your Google Meet window.</p>
+
+        <input
+            id="name"
+            type="text"
+            placeholder="Employee Name">
+
+        <br><br>
+
+        <button id="shareBtn">
+
+            Start Sharing
+
+        </button>
+
+        <br><br>
+
+        <div id="status">
+
+            Waiting...
+
+        </div>
+
+    </div>
+
+</div>
+
+<script src="{{ url_for('static',
+filename='js/employee.js') }}"></script>
+
+</body>
+
+</html>

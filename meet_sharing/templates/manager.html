@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Manager Dashboard</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+
+    <style>
+        body{
+            margin:0;
+            background:#111;
+            font-family:Arial;
+        }
+
+        h1{
+            color:white;
+            text-align:center;
+            padding:20px;
+        }
+
+        #grid{
+            display:grid;
+            grid-template-columns:repeat(auto-fill,minmax(350px,1fr));
+            gap:20px;
+            padding:20px;
+        }
+
+        .card{
+            background:#222;
+            border-radius:10px;
+            padding:10px;
+        }
+
+        .card h3{
+            color:white;
+            margin:0 0 10px;
+        }
+
+        .card img{
+            width:100%;
+            border-radius:8px;
+            background:#000;
+        }
+
+        .online{
+            color:#22c55e;
+        }
+
+        .offline{
+            color:red;
+        }
+    </style>
+
+</head>
+
+<body>
+
+<h1>Google Meet Monitor</h1>
+
+<div id="grid"></div>
+
+<script src="{{ url_for('static', filename='js/manager.js') }}"></script>
+
+</body>
+</html>
